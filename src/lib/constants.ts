@@ -3,17 +3,33 @@ import type { MealSlot, Recipe, WeekPlan } from '../types/domain'
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 export const MEAL_SLOTS: MealSlot[] = ['breakfast', 'lunch', 'dinner']
 
+export const DAY_LABELS: Record<string, string> = {
+  Monday: 'Понедельник',
+  Tuesday: 'Вторник',
+  Wednesday: 'Среда',
+  Thursday: 'Четверг',
+  Friday: 'Пятница',
+  Saturday: 'Суббота',
+  Sunday: 'Воскресенье',
+}
+
+export const MEAL_SLOT_LABELS: Record<MealSlot, string> = {
+  breakfast: 'Завтрак',
+  lunch: 'Обед',
+  dinner: 'Ужин',
+}
+
 export const ALLERGEN_OPTIONS = [
-  'peanuts',
-  'tree nuts',
-  'milk',
-  'eggs',
-  'soy',
-  'gluten',
-  'fish',
-  'shellfish',
-  'sesame',
-  'mushrooms',
+  'арахис',
+  'орехи',
+  'молоко',
+  'яйца',
+  'соя',
+  'глютен',
+  'рыба',
+  'морепродукты',
+  'кунжут',
+  'грибы',
 ]
 
 export const seedRecipes: Recipe[] = [

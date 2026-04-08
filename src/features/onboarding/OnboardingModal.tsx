@@ -21,13 +21,12 @@ export function OnboardingModal() {
             <ShieldCheck size={20} />
           </div>
           <div>
-            <span className="eyebrow">Welcome</span>
-            <h2>Set ingredient exclusions before you plan the week</h2>
+            <span className="eyebrow">Добро пожаловать</span>
+            <h2>Сначала выбери исключения по ингредиентам</h2>
           </div>
         </div>
         <p>
-          We use this list to flag recipe conflicts and make the shopping list safer for allergy-aware
-          planning.
+          Этот список нужен, чтобы заранее подсвечивать конфликты в рецептах и делать список покупок безопаснее.
         </p>
 
         <div className="chip-grid">
@@ -44,9 +43,9 @@ export function OnboardingModal() {
         </div>
 
         <div className="modal-actions">
-          <span className="subtext">{selected.length ? `${selected.length} exclusions selected` : 'You can also continue with none selected.'}</span>
+          <span className="subtext">{selected.length ? `Выбрано исключений: ${selected.length}` : 'Можно продолжить и без исключений.'}</span>
           <button className="primary-button" onClick={() => completeOnboarding(selected)} type="button">
-            Save preferences and continue
+            Сохранить и продолжить
           </button>
         </div>
       </div>

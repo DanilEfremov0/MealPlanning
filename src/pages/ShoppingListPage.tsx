@@ -15,38 +15,38 @@ export function ShoppingListPage() {
     <div className="page-stack">
       <section className="card">
         <SectionHeader
-          eyebrow="Merged ingredients"
-          title="One shopping list for the whole week"
-          description={`Repeated ingredients are merged when name and unit align. ${checkedCount}/${shoppingList.length} items checked.`}
+          eyebrow="Объединённые ингредиенты"
+          title="Один список покупок на всю неделю"
+          description={`Повторяющиеся ингредиенты объединяются автоматически. Отмечено ${checkedCount} из ${shoppingList.length} позиций.`}
           action={
             <button className="secondary-button action-button" onClick={resetShoppingChecks} type="button">
-              <Undo2 size={14} /> Reset checks
+              <Undo2 size={14} /> Сбросить отметки
             </button>
           }
         />
         {shoppingList.length === 0 ? (
-          <div className="empty-state">Plan at least one recipe to generate a shopping list.</div>
+          <div className="empty-state">Запланируй хотя бы одно блюдо, чтобы появился список покупок.</div>
         ) : (
           <>
             <div className="shopping-overview-grid">
               <div className="shopping-summary card subtle">
                 <div>
-                  <span className="eyebrow">Summary</span>
-                  <h3>Weekly shopping workload</h3>
-                  <p>{shoppingList.length} aggregated ingredients across the current weekly plan.</p>
+                  <span className="eyebrow">Сводка</span>
+                  <h3>Покупки на текущую неделю</h3>
+                  <p>{shoppingList.length} объединённых ингредиентов по текущему плану.</p>
                 </div>
                 <ShoppingCart size={24} />
               </div>
               <div className="card subtle progress-card compact">
                 <span className="eyebrow">Progress</span>
                 <div className="progress-row">
-                  <strong>{completionRate}% complete</strong>
-                  <span>{checkedCount} checked</span>
+                  <strong>{completionRate}% собрано</strong>
+                  <span>{checkedCount} отмечено</span>
                 </div>
                 <div className="progress-track">
                   <div className="progress-fill" style={{ width: `${completionRate}%` }} />
                 </div>
-                <span className="subtext">{riskyCount} items match saved exclusions.</span>
+                <span className="subtext">{riskyCount} позиций совпадают с сохранёнными исключениями.</span>
               </div>
             </div>
             <div className="shopping-list">
@@ -58,8 +58,8 @@ export function ShoppingListPage() {
                       <strong>{item.name}</strong>
                       <span>{item.quantity} {item.unit}</span>
                     </div>
-                    <p>Used in: {item.recipeTitles.join(', ')}</p>
-                    {item.conflictsWithExclusions && <span className="warning-badge">matches exclusion</span>}
+                    <p>Используется в: {item.recipeTitles.join(', ')}</p>
+                    {item.conflictsWithExclusions && <span className="warning-badge">совпадает с исключением</span>}
                   </div>
                 </label>
               ))}
