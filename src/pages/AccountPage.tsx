@@ -16,6 +16,11 @@ export function AccountPage() {
           title="Future personal cabinet"
           description="Authentication comes later, but this area already holds user-specific preferences and future profile space."
         />
+        <div className="stats-grid stats-grid-compact">
+          <div className="card stat-card subtle"><strong>{preferences.excludedIngredients.length}</strong><span>Saved exclusions</span></div>
+          <div className="card stat-card subtle"><strong>{recipes.length}</strong><span>Recipes in library</span></div>
+          <div className="card stat-card subtle"><strong>{plannedMeals}</strong><span>Planned meal slots</span></div>
+        </div>
         <div className="account-summary">
           <div className="account-box">
             <span className="eyebrow">Saved exclusions</span>

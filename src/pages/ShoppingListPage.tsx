@@ -8,6 +8,8 @@ export function ShoppingListPage() {
   const resetShoppingChecks = useMealPlanningStore((state) => state.resetShoppingChecks)
 
   const checkedCount = shoppingList.filter((item) => item.checked).length
+  const riskyCount = shoppingList.filter((item) => item.conflictsWithExclusions).length
+  const completionRate = shoppingList.length ? Math.round((checkedCount / shoppingList.length) * 100) : 0
 
   return (
     <div className="page-stack">
@@ -26,13 +28,26 @@ export function ShoppingListPage() {
           <div className="empty-state">Plan at least one recipe to generate a shopping list.</div>
         ) : (
           <>
-            <div className="shopping-summary card subtle">
-              <div>
-                <span className="eyebrow">Summary</span>
-                <h3>Weekly shopping workload</h3>
-                <p>{shoppingList.length} aggregated ingredients across the current weekly plan.</p>
+            <div className="shopping-overview-grid">
+              <div className="shopping-summary card subtle">
+                <div>
+                  <span className="eyebrow">Summary</span>
+                  <h3>Weekly shopping workload</h3>
+                  <p>{shoppingList.length} aggregated ingredients across the current weekly plan.</p>
+                </div>
+                <ShoppingCart size={24} />
               </div>
-              <ShoppingCart size={24} />
+              <div className="card subtle progress-card compact">
+                <span className="eyebrow">Progress</span>
+                <div className="progress-row">
+                  <strong>{completionRate}% complete</strong>
+                  <span>{checkedCount} checked</span>
+                </div>
+                <div className="progress-track">
+                  <div className="progress-fill" style={{ width: `${completionRate}%` }} />
+                </div>
+                <span className="subtext">{riskyCount} items match saved exclusions.</span>
+              </div>
             </div>
             <div className="shopping-list">
               {shoppingList.map((item) => (

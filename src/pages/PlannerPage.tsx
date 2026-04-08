@@ -13,6 +13,8 @@ export function PlannerPage() {
   const clearWeekPlan = useMealPlanningStore((state) => state.clearWeekPlan)
 
   const plannedMeals = Object.values(weekPlan).flatMap((day) => Object.values(day)).filter(Boolean).length
+  const safeRecipes = recipes.filter((recipe) => !recipeMatchesExclusions(recipe, exclusions))
+  const conflictRecipes = recipes.filter((recipe) => recipeMatchesExclusions(recipe, exclusions))
 
   return (
     <div className="page-stack">
@@ -28,55 +30,75 @@ export function PlannerPage() {
           }
         />
         <div className="planner-grid">
-          {DAYS.map((day) => (
-            <div className="planner-day card subtle" key={day}>
-              <h3>{day}</h3>
-              {MEAL_SLOTS.map((slot) => {
-                const recipeId = weekPlan[day]?.[slot]
-                const selectedRecipe = recipes.find((recipe) => recipe.id === recipeId)
-                const conflict = selectedRecipe ? recipeMatchesExclusions(selectedRecipe, exclusions) : false
+          {DAYS.map((day) => {
+            const filledSlots = Object.values(weekPlan[day] ?? {}).filter(Boolean).length
 
-                return (
-                  <div className="slot-block" key={`${day}-${slot}`}>
-                    <div className="slot-topline">
-                      <strong>{slot}</strong>
-                      {selectedRecipe && conflict && <span className="warning-badge">exclusion conflict</span>}
+            return (
+              <div className="planner-day card subtle" key={day}>
+                <div className="planner-day-header">
+                  <h3>{day}</h3>
+                  <span className="mini-chip">{filledSlots}/3 planned</span>
+                </div>
+                {MEAL_SLOTS.map((slot) => {
+                  const recipeId = weekPlan[day]?.[slot]
+                  const selectedRecipe = recipes.find((recipe) => recipe.id === recipeId)
+                  const conflict = selectedRecipe ? recipeMatchesExclusions(selectedRecipe, exclusions) : false
+
+                  return (
+                    <div className="slot-block" key={`${day}-${slot}`}>
+                      <div className="slot-topline">
+                        <strong>{slot}</strong>
+                        {selectedRecipe && conflict && <span className="warning-badge">exclusion conflict</span>}
+                      </div>
+                      <select
+                        value={recipeId ?? ''}
+                        onChange={(event) => {
+                          const value = event.target.value
+                          if (!value) {
+                            removeRecipeFromSlot(day, slot)
+                            return
+                          }
+                          assignRecipeToSlot(day, slot, value)
+                        }}
+                      >
+                        <option value="">No recipe selected</option>
+                        {safeRecipes.length > 0 && (
+                          <optgroup label="Safe recipes">
+                            {safeRecipes.map((recipe) => (
+                              <option key={recipe.id} value={recipe.id}>
+                                {recipe.title}
+                              </option>
+                            ))}
+                          </optgroup>
+                        )}
+                        {conflictRecipes.length > 0 && (
+                          <optgroup label="Recipes with exclusion conflicts">
+                            {conflictRecipes.map((recipe) => (
+                              <option key={recipe.id} value={recipe.id}>
+                                {recipe.title}
+                              </option>
+                            ))}
+                          </optgroup>
+                        )}
+                      </select>
+                      {selectedRecipe ? (
+                        <>
+                          <p className="slot-caption">{selectedRecipe.description}</p>
+                          <div className="ingredient-preview">
+                            {selectedRecipe.ingredients.slice(0, 3).map((ingredient) => (
+                              <span className="mini-chip" key={ingredient.id}>{ingredient.name}</span>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <p className="slot-caption">Choose a recipe for this slot.</p>
+                      )}
                     </div>
-                    <select
-                      value={recipeId ?? ''}
-                      onChange={(event) => {
-                        const value = event.target.value
-                        if (!value) {
-                          removeRecipeFromSlot(day, slot)
-                          return
-                        }
-                        assignRecipeToSlot(day, slot, value)
-                      }}
-                    >
-                      <option value="">No recipe selected</option>
-                      {recipes.map((recipe) => (
-                        <option key={recipe.id} value={recipe.id}>
-                          {recipe.title}
-                        </option>
-                      ))}
-                    </select>
-                    {selectedRecipe ? (
-                      <>
-                        <p className="slot-caption">{selectedRecipe.description}</p>
-                        <div className="ingredient-preview">
-                          {selectedRecipe.ingredients.slice(0, 3).map((ingredient) => (
-                            <span className="mini-chip" key={ingredient.id}>{ingredient.name}</span>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <p className="slot-caption">Choose a recipe for this slot.</p>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          ))}
+                  )
+                })}
+              </div>
+            )
+          })}
         </div>
       </section>
     </div>

@@ -9,15 +9,15 @@ import { useMealPlanningStore } from '../store/useMealPlanningStore'
 import type { MealSlot, Recipe } from '../types/domain'
 
 const recipeSchema = z.object({
-  title: z.string().min(3),
-  description: z.string().min(10),
-  imageUrl: z.string().url(),
-  cookingTime: z.coerce.number<number>().min(5),
-  servings: z.coerce.number<number>().min(1),
-  cuisine: z.string().min(2),
+  title: z.string().min(3, 'Use at least 3 characters for the recipe name.'),
+  description: z.string().min(10, 'Add a short description so the recipe is easy to recognize.'),
+  imageUrl: z.string().url('Paste a valid image URL.'),
+  cookingTime: z.coerce.number<number>().min(5, 'Cooking time should be at least 5 minutes.'),
+  servings: z.coerce.number<number>().min(1, 'Servings should be at least 1.'),
+  cuisine: z.string().min(2, 'Cuisine should be at least 2 characters.'),
   mealType: z.enum(['breakfast', 'lunch', 'dinner']),
-  ingredientsText: z.string().min(5),
-  stepsText: z.string().min(5),
+  ingredientsText: z.string().min(5, 'Add at least one ingredient.'),
+  stepsText: z.string().min(5, 'Add at least one cooking step.'),
 })
 
 type RecipeFormValues = z.output<typeof recipeSchema>
@@ -143,7 +143,7 @@ export function RecipesPage() {
           description={`You currently have ${recipes.length} recipes. ${conflictingCount} conflict with saved exclusions.`}
         />
 
-        <div className="toolbar-row">
+        <div className="toolbar-row toolbar-card">
           <label className="search-box">
             <Search size={16} />
             <input
@@ -154,9 +154,9 @@ export function RecipesPage() {
           </label>
           <div className="filter-chips">
             {[
-              { key: 'all', label: 'All' },
-              { key: 'safe', label: 'Safe' },
-              { key: 'conflicts', label: 'Conflicts' },
+              { key: 'all', label: `All (${recipes.length})` },
+              { key: 'safe', label: `Safe (${recipes.length - conflictingCount})` },
+              { key: 'conflicts', label: `Conflicts (${conflictingCount})` },
             ].map((item) => (
               <button
                 key={item.key}
@@ -216,20 +216,44 @@ export function RecipesPage() {
         <SectionHeader
           eyebrow={editingRecipeId ? 'Edit recipe' : 'Add recipe'}
           title={editingRecipeId ? 'Update an existing recipe' : 'Create a recipe through the UI'}
-          description="Use name | quantity | unit on each ingredient line, similar to structured recipe content on eda.ru."
+          description="Use one ingredient per line in the format name | quantity | unit. This makes shopping aggregation much more reliable."
           action={<Plus size={18} />}
         />
 
         <form className="form-grid" onSubmit={form.handleSubmit(onSubmit)}>
-          <label><span>Title</span><input {...form.register('title')} /></label>
-          <label><span>Description</span><textarea rows={3} {...form.register('description')} /></label>
-          <label><span>Image URL</span><input {...form.register('imageUrl')} /></label>
+          <label>
+            <span>Title</span>
+            <input {...form.register('title')} />
+            {form.formState.errors.title && <span className="field-error">{form.formState.errors.title.message}</span>}
+          </label>
+          <label>
+            <span>Description</span>
+            <textarea rows={3} {...form.register('description')} />
+            {form.formState.errors.description && <span className="field-error">{form.formState.errors.description.message}</span>}
+          </label>
+          <label>
+            <span>Image URL</span>
+            <input {...form.register('imageUrl')} />
+            {form.formState.errors.imageUrl && <span className="field-error">{form.formState.errors.imageUrl.message}</span>}
+          </label>
           <div className="inline-fields">
-            <label><span>Time</span><input type="number" {...form.register('cookingTime')} /></label>
-            <label><span>Servings</span><input type="number" {...form.register('servings')} /></label>
+            <label>
+              <span>Time</span>
+              <input type="number" {...form.register('cookingTime')} />
+              {form.formState.errors.cookingTime && <span className="field-error">{form.formState.errors.cookingTime.message}</span>}
+            </label>
+            <label>
+              <span>Servings</span>
+              <input type="number" {...form.register('servings')} />
+              {form.formState.errors.servings && <span className="field-error">{form.formState.errors.servings.message}</span>}
+            </label>
           </div>
           <div className="inline-fields">
-            <label><span>Cuisine</span><input {...form.register('cuisine')} /></label>
+            <label>
+              <span>Cuisine</span>
+              <input {...form.register('cuisine')} />
+              {form.formState.errors.cuisine && <span className="field-error">{form.formState.errors.cuisine.message}</span>}
+            </label>
             <label>
               <span>Meal type</span>
               <select {...form.register('mealType')}>
@@ -239,8 +263,17 @@ export function RecipesPage() {
               </select>
             </label>
           </div>
-          <label><span>Ingredients</span><textarea rows={6} {...form.register('ingredientsText')} /></label>
-          <label><span>Steps</span><textarea rows={5} {...form.register('stepsText')} /></label>
+          <label>
+            <span>Ingredients</span>
+            <textarea rows={6} {...form.register('ingredientsText')} />
+            <span className="field-hint">Example: tomatoes | 3 | pcs</span>
+            {form.formState.errors.ingredientsText && <span className="field-error">{form.formState.errors.ingredientsText.message}</span>}
+          </label>
+          <label>
+            <span>Steps</span>
+            <textarea rows={5} {...form.register('stepsText')} />
+            {form.formState.errors.stepsText && <span className="field-error">{form.formState.errors.stepsText.message}</span>}
+          </label>
           <div className="card-actions">
             <button className="primary-button" type="submit">{editingRecipeId ? 'Update recipe' : 'Save recipe'}</button>
             {editingRecipeId && (
