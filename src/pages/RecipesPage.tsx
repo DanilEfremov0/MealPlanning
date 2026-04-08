@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AlertTriangle, Clock3, Pencil, Plus, Trash2, Users } from 'lucide-react'
+import { AlertTriangle, Clock3, Pencil, Plus, Search, Trash2, Users } from 'lucide-react'
 import { SectionHeader } from '../components/ui/SectionHeader'
 import { recipeMatchesExclusions } from '../lib/utils'
 import { useMealPlanningStore } from '../store/useMealPlanningStore'
@@ -21,6 +21,7 @@ const recipeSchema = z.object({
 })
 
 type RecipeFormValues = z.output<typeof recipeSchema>
+type FilterMode = 'all' | 'safe' | 'conflicts'
 
 const defaultValues: RecipeFormValues = {
   title: '',
@@ -53,6 +54,8 @@ export function RecipesPage() {
   const updateRecipe = useMealPlanningStore((state) => state.updateRecipe)
   const deleteRecipe = useMealPlanningStore((state) => state.deleteRecipe)
   const [editingRecipeId, setEditingRecipeId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterMode, setFilterMode] = useState<FilterMode>('all')
 
   const form = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeSchema),
@@ -63,6 +66,25 @@ export function RecipesPage() {
     () => recipes.filter((recipe) => recipeMatchesExclusions(recipe, exclusions)).length,
     [recipes, exclusions],
   )
+
+  const filteredRecipes = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    return recipes.filter((recipe) => {
+      const hasConflict = recipeMatchesExclusions(recipe, exclusions)
+      const matchesQuery =
+        !query ||
+        recipe.title.toLowerCase().includes(query) ||
+        recipe.cuisine.toLowerCase().includes(query) ||
+        recipe.ingredients.some((ingredient) => ingredient.name.toLowerCase().includes(query))
+
+      const matchesFilter =
+        filterMode === 'all' ||
+        (filterMode === 'safe' && !hasConflict) ||
+        (filterMode === 'conflicts' && hasConflict)
+
+      return matchesQuery && matchesFilter
+    })
+  }, [recipes, exclusions, searchQuery, filterMode])
 
   const startEditing = (recipe: Recipe) => {
     setEditingRecipeId(recipe.id)
@@ -75,15 +97,18 @@ export function RecipesPage() {
   }
 
   const onSubmit = (values: RecipeFormValues) => {
-    const ingredients = values.ingredientsText.split('\n').map((line, index) => {
-      const [name, quantity, unit] = line.split('|').map((part) => part.trim())
-      return {
-        id: `ingredient-${Date.now()}-${index}`,
-        name,
-        quantity: Number(quantity) || 1,
-        unit: unit || 'pcs',
-      }
-    })
+    const ingredients = values.ingredientsText
+      .split('\n')
+      .map((line, index) => {
+        const [name, quantity, unit] = line.split('|').map((part) => part.trim())
+        return {
+          id: `ingredient-${Date.now()}-${index}`,
+          name,
+          quantity: Number(quantity) || 1,
+          unit: unit || 'pcs',
+        }
+      })
+      .filter((ingredient) => ingredient.name)
 
     const steps = values.stepsText.split('\n').map((line) => line.trim()).filter(Boolean)
 
@@ -117,8 +142,36 @@ export function RecipesPage() {
           title="Catalog and maintain your weekly meal library"
           description={`You currently have ${recipes.length} recipes. ${conflictingCount} conflict with saved exclusions.`}
         />
+
+        <div className="toolbar-row">
+          <label className="search-box">
+            <Search size={16} />
+            <input
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search by title, cuisine, or ingredient"
+            />
+          </label>
+          <div className="filter-chips">
+            {[
+              { key: 'all', label: 'All' },
+              { key: 'safe', label: 'Safe' },
+              { key: 'conflicts', label: 'Conflicts' },
+            ].map((item) => (
+              <button
+                key={item.key}
+                className={`chip ${filterMode === item.key ? 'chip-active' : ''}`}
+                onClick={() => setFilterMode(item.key as FilterMode)}
+                type="button"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="recipe-grid">
-          {recipes.map((recipe) => {
+          {filteredRecipes.map((recipe) => {
             const hasConflict = recipeMatchesExclusions(recipe, exclusions)
             return (
               <article className="recipe-card" key={recipe.id}>
@@ -156,6 +209,7 @@ export function RecipesPage() {
             )
           })}
         </div>
+        {!filteredRecipes.length && <div className="empty-state">No recipes match your current search or filter.</div>}
       </section>
 
       <section className="card sticky-card">

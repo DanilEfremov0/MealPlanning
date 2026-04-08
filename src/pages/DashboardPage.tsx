@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import { CalendarRange, ChefHat, ShieldAlert, ShoppingBasket } from 'lucide-react'
+import { AlertTriangle, CalendarRange, ChefHat, ShieldAlert, ShoppingBasket } from 'lucide-react'
 import { SectionHeader } from '../components/ui/SectionHeader'
 import { useShoppingList, useMealPlanningStore } from '../store/useMealPlanningStore'
+import { recipeMatchesExclusions } from '../lib/utils'
 
 export function DashboardPage() {
   const recipes = useMealPlanningStore((state) => state.recipes)
@@ -10,6 +11,8 @@ export function DashboardPage() {
   const shoppingList = useShoppingList()
 
   const plannedMeals = Object.values(weekPlan).flatMap((day) => Object.values(day)).filter(Boolean).length
+  const conflictingRecipes = recipes.filter((recipe) => recipeMatchesExclusions(recipe, exclusions))
+  const completionRate = Math.round((plannedMeals / 21) * 100)
 
   return (
     <div className="page-stack">
@@ -18,15 +21,14 @@ export function DashboardPage() {
           <span className="eyebrow">Weekly flow</span>
           <h1>Plan meals, catch exclusions, and shop from one clean view.</h1>
           <p>
-            This MVP is optimized for one user who wants a beautiful but practical weekly meal planning
-            workflow.
+            The product is already usable as a meal planning MVP and is now shifting into deeper quality and UX iterations.
           </p>
           <div className="hero-actions">
             <Link className="primary-button" to="/planner">
               Open planner
             </Link>
             <Link className="secondary-button" to="/recipes">
-              Add recipes
+              Manage recipes
             </Link>
           </div>
         </div>
@@ -37,6 +39,48 @@ export function DashboardPage() {
         <div className="card stat-card"><CalendarRange size={20} /><strong>{plannedMeals}</strong><span>Meals planned</span></div>
         <div className="card stat-card"><ShoppingBasket size={20} /><strong>{shoppingList.length}</strong><span>Shopping items</span></div>
         <div className="card stat-card"><ShieldAlert size={20} /><strong>{exclusions.length}</strong><span>Exclusions tracked</span></div>
+      </section>
+
+      <section className="dashboard-grid">
+        <div className="card">
+          <SectionHeader
+            eyebrow="Planner status"
+            title="Weekly completion"
+            description="Track how much of the week is already planned."
+          />
+          <div className="progress-card">
+            <div className="progress-row">
+              <strong>{completionRate}% complete</strong>
+              <span>{plannedMeals}/21 slots filled</span>
+            </div>
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${completionRate}%` }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <SectionHeader
+            eyebrow="Attention"
+            title="Recipes with conflicts"
+            description="Saved exclusions surface recipes that may need substitution."
+          />
+          {conflictingRecipes.length ? (
+            <div className="stack-list">
+              {conflictingRecipes.slice(0, 4).map((recipe) => (
+                <div className="list-item" key={recipe.id}>
+                  <div>
+                    <strong>{recipe.title}</strong>
+                    <p>{recipe.cuisine}</p>
+                  </div>
+                  <span className="warning-badge"><AlertTriangle size={14} /> review</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">No recipe conflicts with current exclusions.</div>
+          )}
+        </div>
       </section>
 
       <section className="card">
