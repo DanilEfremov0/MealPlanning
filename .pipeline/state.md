@@ -14,14 +14,14 @@
 - [x] 01 · Product Lead
 - [x] 02 · Tech Lead
 - [x] 03 · Product Designer (v2 redesign complete)
-- [ ] 04 · Frontend (parallel)
-- [ ] 05 · Backend (parallel)
+- [x] 04 · Frontend (parallel)
+- [x] 05 · Backend (parallel)
 - [ ] 06 · QA Code (parallel)
 - [ ] 07 · QA Design (parallel)
 - [ ] 08 · Final Review
 
 ## Current Stage
-**Stage:** 04+05 · Frontend + Backend (parallel)
+**Stage:** 06+07 · QA Code + QA Design (parallel)
 **Status:** In Progress
 **Blocked by:** —
 
@@ -36,8 +36,8 @@
 - [x] 03-design-specs.md
 - [x] .agent/design-system/reviews/2026-04-14-mealplanning-mvp-v2.md
 - [x] .agent/tasks/TASK-01-mealplanning-mvp-frontend.md
-- [ ] 04-frontend-notes.md
-- [ ] 05-backend-notes.md
+- [x] 04-frontend-notes.md
+- [x] 05-backend-notes.md
 - [ ] 06-qa-code-report.md
 - [ ] 07-qa-design-report.md
 
