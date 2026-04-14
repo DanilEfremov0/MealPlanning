@@ -13,7 +13,7 @@
 ## Stage Progress
 - [x] 01 · Product Lead
 - [x] 02 · Tech Lead
-- [ ] 03 · Product Designer
+- [x] 03 · Product Designer
 - [ ] 04 · Frontend (parallel)
 - [ ] 05 · Backend (parallel)
 - [ ] 06 · QA Code (parallel)
@@ -21,23 +21,32 @@
 - [ ] 08 · Final Review
 
 ## Current Stage
-**Stage:** 03 · Product Designer
+**Stage:** 04+05 · Frontend + Backend (parallel)
 **Status:** In Progress
 **Blocked by:** —
 
 ## Artifacts Produced
-- [x] `01-product-brief.md`
-- [x] `02-architecture.md`
-- [x] `02-tasks.md`
-- [x] `02-dor-dod.md`
-- [x] `02-risk-assessment.md`
-- [ ] `03-personas.md`
-- [ ] `03-cjm.md`
-- [ ] `03-design-specs.md`
-- [ ] `04-frontend-notes.md`
-- [ ] `05-backend-notes.md`
-- [ ] `06-qa-code-report.md`
-- [ ] `07-qa-design-report.md`
+- [x] 01-product-brief.md
+- [x] 02-architecture.md
+- [x] 02-tasks.md
+- [x] 02-dor-dod.md
+- [x] 02-risk-assessment.md
+- [x] 03-personas.md
+- [x] 03-cjm.md
+- [x] 03-design-specs.md
+- [ ] 04-frontend-notes.md
+- [ ] 05-backend-notes.md
+- [ ] 06-qa-code-report.md
+- [ ] 07-qa-design-report.md
+
+## Figma Screens
+- [x] Design System (colors + typography)
+- [x] 01 Onboarding (mobile 375px)
+- [x] 02a Schedule — Empty state (mobile)
+- [x] 02b Schedule — Populated state (mobile)
+- [x] 03 Swap Modal — Item selected (mobile)
+- [x] 04 Shopping List — Partially checked (mobile)
+- [x] Desktop Schedule — Full 7-day grid (1440px)
 
 ## Open Bugs
 | ID | Severity | Assigned to | Status |
@@ -46,13 +55,14 @@
 ## Key Decisions
 | Decision | Made by | Date | Rationale |
 |----------|---------|------|-----------|
-| No auth in MVP | Tech Lead | 2026-04-14 | Out of scope per Product Brief; no stable user identity needed |
-| Schedule in localStorage only | Tech Lead | 2026-04-14 | No auth = no server-side identity; localStorage sufficient |
-| Client-side allergen filter | Tech Lead | 2026-04-14 | Firestore lacks array-not-contains; 30 recipes = negligible client filter |
-| Zustand over Redux | Tech Lead | 2026-04-14 | Simple state tree; Zustand 1.5KB vs Redux 40KB+ |
-| Vite over CRA/Next.js | Tech Lead | 2026-04-14 | CRA deprecated; SSR not needed for SPA |
+| No auth in MVP | Tech Lead | 2026-04-14 | Out of scope per Product Brief |
+| Schedule in localStorage only | Tech Lead | 2026-04-14 | No auth = no server identity |
+| Client-side allergen filter | Tech Lead | 2026-04-14 | Firestore lacks array-not-contains |
+| Zustand over Redux | Tech Lead | 2026-04-14 | Simple state tree, 1.5KB vs 40KB |
+| Vite over CRA/Next.js | Tech Lead | 2026-04-14 | CRA deprecated, SSR not needed |
+| Primary green only on large text/icons | Designer | 2026-04-14 | #4CAF82 on white = 3.5:1 (below AA for body text) |
 
 ## Cycle Log
 | Cycle | Feature | Result | Date |
 |-------|---------|--------|------|
-| 1     | MVP — Meal Planning Web App | In Progress | 2026-04-14 |
+| 1 | MVP — Meal Planning Web App | In Progress | 2026-04-14 |
