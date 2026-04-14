@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type {
   Recipe, DaySchedule, ShoppingItem,
-  AllergenKey, MealType, SelectedSlot
+  AllergenKey, SelectedSlot
 } from '../types';
 import { generateSchedule, getAlternatives, generateShoppingList } from '../lib/scheduleGenerator';
 

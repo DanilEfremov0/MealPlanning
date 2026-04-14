@@ -11,7 +11,6 @@ type Tab = 'schedule' | 'shopping';
 export default function App() {
   const onboardingComplete = useStore(s => s.onboardingComplete);
   const setRecipes         = useStore(s => s.setRecipes);
-  const allergens          = useStore(s => s.allergens);
   const [tab, setTab]      = useState<Tab>('schedule');
   const [loaded, setLoaded] = useState(false);
   const [error, setError]  = useState<string | null>(null);
@@ -28,7 +27,7 @@ export default function App() {
         setError('Не удалось загрузить рецепты. Проверьте соединение.');
         setLoaded(true);
       });
-  }, []);
+  }, [setRecipes]);
 
   if (!loaded) {
     return (
