@@ -13,7 +13,7 @@
 ## Stage Progress
 - [x] 01 · Product Lead
 - [x] 02 · Tech Lead
-- [x] 03 · Product Designer
+- [x] 03 · Product Designer (v2 redesign complete)
 - [ ] 04 · Frontend (parallel)
 - [ ] 05 · Backend (parallel)
 - [ ] 06 · QA Code (parallel)
@@ -34,6 +34,8 @@
 - [x] 03-personas.md
 - [x] 03-cjm.md
 - [x] 03-design-specs.md
+- [x] .agent/design-system/reviews/2026-04-14-mealplanning-mvp-v2.md
+- [x] .agent/tasks/TASK-01-mealplanning-mvp-frontend.md
 - [ ] 04-frontend-notes.md
 - [ ] 05-backend-notes.md
 - [ ] 06-qa-code-report.md
@@ -61,6 +63,7 @@
 | Zustand over Redux | Tech Lead | 2026-04-14 | Simple state tree, 1.5KB vs 40KB |
 | Vite over CRA/Next.js | Tech Lead | 2026-04-14 | CRA deprecated, SSR not needed |
 | Primary green only on large text/icons | Designer | 2026-04-14 | #4CAF82 on white = 3.5:1 (below AA for body text) |
+| v2 redesign: new token system | Designer | 2026-04-14 | Product Lead review — dark hero, #3ECF8E primary, 16 tokens |
 
 ## Cycle Log
 | Cycle | Feature | Result | Date |
