@@ -1,319 +1,261 @@
-# 03 — Design Specs (Developer Handoff)
+# 03 — Design Specs (Developer Handoff) v2
 **Project:** MealPlanning
-**Product Designer:** Pipeline Stage 03
+**Iteration:** v2 (after Product Lead review)
 **Date:** 2026-04-14
-**Figma file:** https://www.figma.com/file/jeRgiftgUgJV0YV5Yx73Id
+**Figma:** https://www.figma.com/file/jeRgiftgUgJV0YV5Yx73Id
+**Implementation plan:** `.agent/tasks/TASK-01-mealplanning-mvp-frontend.md`
+**Design review:** `.agent/design-system/reviews/2026-04-14-mealplanning-mvp-v2.md`
 
 ---
 
-## Figma Pages Structure
+## What Changed from v1
+
+| Area | v1 | v2 |
+|------|----|----|
+| Onboarding hero | Flat emoji on green bg | Dark gradient with radial glow, badge, preview chips |
+| Primary color | #4CAF82 | #3ECF8E (better vibrancy) |
+| Cards | Flat white frames | Accent strip (color per meal) + emoji bubble + shadow |
+| Swap modal | Flat overlay with rows | Bottom sheet with drag handle + dimmed backdrop |
+| Shopping list | Flat item list | Categorized + progress bar + share button |
+| Typography | Missing ExtraBold | Inter ExtraBold added for hero (800 weight) |
+| Shadows | None | xs (cards), cta (buttons), sheet (modal) |
+
+---
+
+## Figma Pages
 
 | Page | Contents |
 |------|---------|
-| Design System | Color palette, typography scale |
-| Mobile Screens | All 4 mobile screens (375x812) |
-| Desktop Screens | Desktop schedule screen (1440x900) |
-| Flows & States | User flow diagrams |
-| Specs | Component specifications |
-
----
-
-## Screens Inventory
-
-| ID | Screen Name | Figma Page | Size | States Covered |
-|----|------------|-----------|------|---------------|
-| 01 | Onboarding | Mobile Screens | 375x812 | Default (allergen selected) |
-| 02a | Schedule — Empty | Mobile Screens | 375x812 | Empty state |
-| 02b | Schedule — Populated | Mobile Screens | 375x812 | Populated with allergen badge |
-| 03 | Swap Modal | Mobile Screens | 375x812 | Item selected state |
-| 04 | Shopping List | Mobile Screens | 375x812 | Partially checked |
-| D1 | Desktop Schedule | Desktop Screens | 1440x900 | Full 7-day grid |
+| Design System | Color palette (v1) + Typography scale |
+| Mobile Screens | 4 screens v2: Onboarding, Schedule, Swap Modal, Shopping |
+| Desktop Screens | Desktop Schedule v2 (1440x900) |
 
 ---
 
 ## Color Tokens
 
-| Token | Hex | RGB | Usage |
-|-------|-----|-----|-------|
-| --color-primary | #4CAF82 | 76, 175, 130 | Buttons, active states, accent bars |
-| --color-primary-dark | #388E63 | 56, 142, 99 | Hover states, selected text |
-| --color-primary-light | #E8F5EE | 232, 245, 238 | Selected chip bg, badge bg, secondary btn |
-| --color-text | #1A1A2E | 26, 26, 46 | Primary text, headings |
-| --color-subtext | #6B7280 | 107, 114, 128 | Secondary text, labels, metadata |
-| --color-surface | #F9FAFB | 249, 250, 251 | Page background, skeleton bg |
-| --color-border | #E5E7EB | 229, 231, 235 | Card borders, dividers, nav border |
-| --color-error | #EF4444 | 239, 68, 68 | Error states (future use) |
-| --color-warning | #F59E0B | 245, 158, 11 | Warning badges (future use) |
-| --color-white | #FFFFFF | 255, 255, 255 | Card backgrounds, nav backgrounds |
-
-Tailwind config:
 ```js
+// tailwind.config.ts
 colors: {
-  primary: { DEFAULT: '#4CAF82', dark: '#388E63', light: '#E8F5EE' },
-  text: { DEFAULT: '#1A1A2E', sub: '#6B7280' },
-  surface: '#F9FAFB',
-  border: '#E5E7EB',
+  green:  { DEFAULT: '#3ECF8E', dark: '#1a9e6a', dim: '#d1fae5' },
+  ink:    { DEFAULT: '#0f172a', 2: '#334155', 3: '#64748b', 4: '#94a3b8' },
+  surface: '#f8fafc',
+  card:   '#ffffff',
+  border: '#e2e8f0',
+  amber:  { DEFAULT: '#F59E0B', light: '#FEF3C7' },
+  blue:   { DEFAULT: '#3B82F6', light: '#DBEAFE' },
+  violet: { DEFAULT: '#8B5CF6', light: '#EDE9FE' },
+  red:    '#F43F5E',
+  amber2: '#F59E0B',
 }
 ```
 
----
-
-## Typography Scale
-
-| Role | Size | Weight | Line Height | Tailwind Class |
-|------|------|--------|-------------|---------------|
-| H1 | 28px | Bold (700) | 36px | text-[28px] font-bold |
-| H2 | 22px | Semi Bold (600) | 30px | text-[22px] font-semibold |
-| H3 | 18px | Semi Bold (600) | 26px | text-lg font-semibold |
-| Body | 15px | Regular (400) | 22px | text-[15px] |
-| Label | 13px | Medium (500) | 18px | text-[13px] font-medium |
-| Caption | 12px | Regular (400) | 16px | text-xs |
-| Micro | 10–11px | Regular/Medium | 14px | text-[10px] |
-
-Font family: Inter (Google Fonts). Fallback: system-ui, -apple-system, sans-serif.
+**Accessibility note:** `green` (#3ECF8E) on white = ~3.5:1 — use ONLY for icons,
+accent strips, decorative. For text on white, always use `green-dark` (#1a9e6a = 4.7:1 ✓).
 
 ---
 
-## Spacing System
+## Typography
 
-Base unit: 4px (Tailwind default).
+```js
+fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+```
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| space-1 | 4px | Micro gaps |
-| space-2 | 8px | Chip gaps, small padding |
-| space-3 | 12px | Card internal padding |
-| space-4 | 16px | Screen horizontal padding |
-| space-5 | 20px | Section gaps |
-| space-6 | 24px | Screen top padding |
-| space-8 | 32px | Large section spacing |
+| Role | Size | Weight | Tailwind |
+|------|------|--------|---------|
+| Hero | 30px | 800 | `text-[30px] font-extrabold` |
+| Title | 22px | 700 | `text-[22px] font-bold` |
+| Section | 18px | 600 | `text-lg font-semibold` |
+| Body | 15px | 400–500 | `text-[15px]` |
+| Label | 13px | 500–600 | `text-[13px] font-medium` |
+| Caption | 12px | 400 | `text-xs` |
+| Micro | 10–11px | 600–700 | `text-[10px] font-semibold` |
+
+---
+
+## Spacing
+
+Base: 4px. Use Tailwind defaults. Key values: 2 (8px), 3 (12px), 4 (16px), 5 (20px), 6 (24px).
 
 ---
 
 ## Component Specs
 
-### AllergenChip
-States: unselected | selected | none-option
-
+### PrimaryButton
 ```
-Unselected:
-  bg: --color-surface
-  border: 1px --color-border
-  text: --color-text, 13px Regular
-  padding: 10px 16px
-  height: 44px
-  border-radius: 22px
+height: 54px
+border-radius: 9999px (pill)
+bg: green (#3ECF8E)
+text: 16px Bold, ink (#0f172a)  ← ink on green = 10:1 contrast ✓
+shadow: 0 8px 20px -4px rgba(62,207,142,.45)
+hover: bg green-dark
+active: scale(0.97) 100ms
+```
 
-Selected:
-  bg: --color-primary-light
-  border: 1.5px --color-primary
-  text: --color-primary-dark, 13px Medium
-  same sizing
-
-Touch target: 44x44px minimum
+### AllergenChip
+```
+height: 44px (touch target)
+border-radius: 22px
+unselected: bg surface, border border, text ink-2 13px Medium
+selected:   bg green-dim, border 1.5px green, text green-dark 13px SemiBold
+            shadow: 0 0 0 3px rgba(62,207,142,.18)
+transition: all 150ms ease
 ```
 
 ### RecipeCard (Mobile)
 ```
-Width: column width (150px in scroll, full in list)
-Height: 148px (with swap button)
-bg: white
-border: 1px --color-border
-border-radius: 12px
-Top accent bar: 4px height, bg --color-primary
+width: 152px (mobile scroll column)
+border-radius: 10px
+border: 1px border
+shadow: 0 1px 3px rgba(15,23,42,.06)
+hover:  0 10px 15px rgba(15,23,42,.08), translateY(-1px)
 
-Internal layout (top to bottom):
-  - Accent bar: 4px
-  - Emoji: 28px, centered, top: 10px from bar
-  - Recipe name: 12px Medium, 8px from sides, top: 44px from top
-  - Meta (time + calories): 10px Regular, subtext color
-  - Swap button: height 28px, border-radius 8px, bg surface
-    - Text: 11px Medium, primary color
-    - Margin: 8px sides, 8px from bottom
+AccentStrip: 3px top, full width
+  breakfast: linear-gradient(90deg, #F59E0B, #FBBF24)
+  lunch:     linear-gradient(90deg, #3B82F6, #60A5FA)
+  dinner:    linear-gradient(90deg, #8B5CF6, #A78BFA)
+
+EmojiBubble: 36x36px, rounded-[10px]
+  breakfast: bg amber-light
+  lunch:     bg blue-light
+  dinner:    bg violet-light
+
+Recipe name: 12px SemiBold, ink, max 2 lines
+Meta: 10px Regular, ink-4
+SwapLink: centered, 11px SemiBold, green-dark
 ```
 
 ### RecipeCard (Desktop)
 ```
-Width: 182px
-Height: 140px
-Same visual treatment as mobile, scaled
-Accent bar: 3px
-Emoji: 24px
-Recipe name: 12px Medium
-Time/cal: 10px Regular
-Swap button: 28px height
+width: (viewport - 80px) / 7 ≈ 182px
+AccentStrip: 3px
+EmojiBubble: 32x32px
+Recipe name: 12px SemiBold
+Same hover behavior
 ```
 
-### SwapModal (Mobile — Bottom Sheet)
+### AlternativeRow (SwapModal)
 ```
-Backdrop: #1A1A2E at 50% opacity
-Sheet:
-  border-radius: 24px (top corners only, use CSS)
-  bg: white
-  padding: 24px
-  min-height: 560px
+height: 64px
+border-radius: 14px
+unselected: bg surface, border 1px border
+selected:   bg green-dim, border 1.5px green
+            shadow: 0 0 0 3px rgba(62,207,142,.15)
+transition: all 150ms
 
-Drag handle:
-  width: 40px, height: 4px
-  bg: --color-border
-  border-radius: 2px
-  centered, 8px from top
+EmojiArea: 40x40px, rounded-[10px]
+  unselected: bg border/50
+  selected:   bg rgba(62,207,142,.25)
 
-Alternative row:
-  height: 64px
-  border-radius: 12px
-  padding: 12px 12px
-  Unselected: bg white, border 1px --color-border
-  Selected: bg --color-primary-light, border 1.5px --color-primary
+Name: 14px SemiBold (selected green-dark, unselected ink)
+Meta: 12px Regular, ink-3
+Checkmark: 26x26px circle, bg green, white ✓
+```
+
+### BottomSheet
+```
+Backdrop: fixed inset-0, bg ink/55, backdrop-blur-sm
+Sheet: fixed bottom-0 left-0 right-0
+       bg card, border-radius 24px 24px 0 0
+       shadow: 0 -8px 40px rgba(15,23,42,.25)
+
+Open animation:  translateY(100%) → translateY(0), 250ms cubic-bezier(0.16,1,0.3,1)
+Close animation: translateY(0) → translateY(100%), 200ms ease-in
+
+DragHandle: 36x4px, bg border, border-radius 2px, centered, margin-top 10px
 ```
 
 ### ShoppingItem
 ```
-Height: 56px
-Border-bottom: 1px --color-border
-padding: 16px 20px
+height: 56px
+border-bottom: 1px border (inset: from checkbox edge)
+padding: 0 20px
 
-Checkbox:
-  size: 24x24px
-  border-radius: 6px
-  Unchecked: bg white, border 2px --color-border
-  Checked: bg --color-primary, checkmark white
+Checkbox: 24x24px, rounded-[7px]
+  unchecked: bg card, border 2px border
+  checked:   bg green, no border, white ✓ (13px Bold)
+  animation: scale 0.85→1, 150ms
 
-Item name:
-  Unchecked: 15px Medium, --color-text
-  Checked: 15px Regular, --color-subtext, text-decoration: line-through
+Name (unchecked): 15px Medium, ink
+Name (checked):   15px Regular, ink-4, text-decoration: line-through
 
-Amount: 14px Regular, --color-subtext, right-aligned
+Amount: 14px SemiBold, ink-3, right-aligned
 ```
 
-### PrimaryButton
+### ProgressBar
 ```
-height: 54px (main CTA) / 36px (secondary)
-border-radius: 27px (pill)
-bg: --color-primary
-text: 16px Semi Bold (main) / 13px Semi Bold (secondary), white
-padding: 0 24px
-hover: bg --color-primary-dark
-active: scale(0.97)
-disabled: opacity 0.5, cursor not-allowed
+Track: height 6px, bg border, border-radius 3px
+Fill:  height 6px, bg linear-gradient(90deg, green, green-dark)
+       width: (checked/total * 100)%
+       transition: width 300ms ease
+Label: 11px Medium, ink-4
 ```
 
-### SecondaryButton (ghost)
+### BottomNav
 ```
-Same sizing as primary
-bg: --color-primary-light
-text: --color-primary-dark
-border: none
+height: 80px + safe-area-inset-bottom
+bg: card/92 with backdrop-blur-md
+border-top: 1px border
+
+NavTab (active):   icon 22px + label 11px SemiBold, color green-dark
+                   4x4px dot, color green, below label
+NavTab (inactive): icon 22px + label 11px Medium, color ink-4
 ```
 
-### BottomNav (Mobile)
+### OnboardingHero
 ```
-height: 80px
-bg: white
-border-top: 1px --color-border
-Two tabs, evenly spaced
+height: ~320px
+bg: linear-gradient(160deg, #0f172a 0%, #1e3a5f 60%, #0d4a2e 100%)
+overlay: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(62,207,142,.18), transparent)
 
-Tab icon: 24px emoji
-Tab label: 11px Regular (inactive) / Medium (active)
-Active color: --color-primary
-Inactive color: --color-subtext
-```
-
-### TopNav (Desktop)
-```
-height: 64px
-bg: white
-border-bottom: 1px --color-border
-padding: 0 40px
-
-Logo: left-aligned
-Nav links: centered
-Action button: right-aligned (200px wide)
-Active nav link: underline 2px --color-primary
+BadgePill: bg green/12, border green/30, 12px SemiBold, green text
+HeroTitle: 30px ExtraBold, white; accent word: green
+Subtitle:  14px Regular, white/65, line-height 1.5
+PreviewChips: bg white/8, border white/15, 12px Medium, white/80
 ```
 
 ---
 
 ## Responsive Breakpoints
 
-| Breakpoint | Width | Layout |
-|-----------|-------|--------|
-| Mobile | 375px | Bottom nav, WeekGrid horizontal scroll (150px cols) |
-| Mobile L | 430px | Same layout, slightly wider cards |
-| Tablet | 768px | Top nav, 3-4 days visible in grid |
-| Desktop | 1280px | Full 7-day grid, top nav, sidebar option |
-| Wide | 1440px | Full grid with comfortable margins |
-
-### WeekGrid Responsive Behavior
-- Mobile (< 768px): horizontal scroll, snap to day, 150px column width
-- Tablet (768–1279px): 4 columns visible, scroll
-- Desktop (>= 1280px): all 7 columns visible, no scroll
-  - Column width: (viewport - 80px padding) / 7
+| Breakpoint | px | WeekGrid | Nav |
+|-----------|-----|---------|-----|
+| Mobile | 375 | Horizontal scroll, 152px cols | Bottom nav |
+| Mobile L | 430 | Same | Bottom nav |
+| Tablet | 768 | 4 cols visible, scroll | Top nav |
+| Desktop | 1280 | All 7 cols, CSS Grid | Top nav + sidebar option |
+| Wide | 1440 | Full grid, 40px padding | Top nav |
 
 ---
 
-## Interaction Notes
+## Animations
 
-### Onboarding
-- AllergenChip toggle: instant visual feedback (no loading)
-- CTA button: always enabled (allergens optional)
-- On tap CTA: brief 200ms scale animation, then navigate
+| Element | Spec |
+|---------|-----|
+| AllergenChip toggle | bg + border crossfade, 150ms ease |
+| PrimaryButton tap | scale(0.97), 100ms ease |
+| BottomSheet open | translateY(100%→0), 250ms cubic-bezier(0.16,1,0.3,1) |
+| BottomSheet close | translateY(0→100%), 200ms ease-in |
+| Skeleton pulse | opacity 0.4↔0.9, 1500ms ease-in-out infinite |
+| RecipeCard hover | translateY(-1px) + shadow-md, 150ms ease |
+| Checkbox check | scale(0.85→1), 150ms ease |
+| ProgressBar fill | width, 300ms ease |
+| Schedule cards appear | opacity 0→1 + translateY(8px→0), 300ms, 50ms stagger/col |
 
-### Schedule Generation
-- Show skeleton cards (pulsing gray) while fetching recipes from Firestore
-- Skeleton: same card dimensions, bg #EAECF0, animation: pulse 1.5s infinite
-- After generation: cards fade in with 300ms stagger per day column
-
-### SwapModal
-- Trigger: tap on RecipeCard (anywhere on card)
-- Open animation: sheet slides up from bottom, 250ms ease-out
-- Close: tap backdrop or Escape key
-- Focus trap: Tab cycles within modal
-- Alternative row selection: instant visual swap (no loading)
-- Confirm: 150ms feedback + close modal + update card
-
-### Shopping List
-- Checkbox tap: instant check animation (scale 0.9 → 1 on check)
-- Checked item slides toward bottom (or just changes appearance for MVP)
-- Share button: native share sheet on mobile, clipboard on desktop
+All animations: `@media (prefers-reduced-motion: reduce) { * { animation: none; transition: none; } }`
 
 ---
 
-## Accessibility Notes
+## Accessibility
 
-| Requirement | Spec |
-|------------|------|
-| Color contrast (text) | Min 4.5:1. Primary on white: 3.5:1 — use on non-text only (icons/decorative) |
-| Large text contrast | Min 3:1. H1/H2 on white: passes |
-| Touch targets | Min 44x44px. All chips, buttons, checkboxes, nav tabs: 44px+ |
-| Focus indicator | 2px solid #4CAF82 outline, 2px offset, visible on all interactive elements |
-| Screen reader | All icon-only buttons: aria-label. Allergen chips: role="checkbox". Modal: aria-modal, aria-labelledby |
-| Motion | All animations respect prefers-reduced-motion: reduce |
-
-Note: Primary green (#4CAF82) on white background has contrast ratio ~3.5:1 — does NOT meet WCAG AA for body text. Only use it for icons, decorative elements, and large text (28px+). For interactive text labels use --color-primary-dark (#388E63) which achieves ~4.7:1.
-
----
-
-## Assets to Export
-
-| Asset | Format | Size | Usage |
-|-------|--------|------|-------|
-| App favicon | PNG | 32x32, 64x64 | Browser tab |
-| App icon (PWA) | PNG | 192x192, 512x512 | Future PWA |
-| Allergen icons | SVG | 24x24 | AllergenChip (use emoji for MVP) |
-
-For MVP: all icons are emoji characters rendered in HTML. No SVG export needed.
-
----
-
-## Animation Specs
-
-| Element | Animation | Duration | Easing |
-|---------|-----------|----------|--------|
-| AllergenChip toggle | Background + border color crossfade | 150ms | ease |
-| CTA button tap | scale(0.97) | 100ms | ease |
-| SwapModal open | translateY(100%) → 0 | 250ms | cubic-bezier(0.16, 1, 0.3, 1) |
-| SwapModal close | translateY(0) → 100% | 200ms | ease-in |
-| Skeleton loading | opacity 0.4 → 0.9 → 0.4 | 1500ms | ease-in-out, infinite |
-| Schedule card appear | opacity 0 → 1, translateY(8px) → 0 | 300ms | ease-out, staggered 50ms/col |
-| Checkbox check | scale(0.85) → 1 | 150ms | spring |
+| Requirement | Implementation |
+|------------|---------------|
+| Contrast (body text) | Use ink (#0f172a) or ink-2/3 on light — all pass 4.5:1 |
+| Contrast (green on ink) | white text on ink bg: 16:1 ✓ |
+| Touch targets | All chips, buttons, checkboxes, nav tabs: min 44x44px |
+| Focus visible | `focus-visible:outline-2 focus-visible:outline-green focus-visible:outline-offset-2` |
+| BottomSheet | `role="dialog" aria-modal="true" aria-labelledby="sheet-title"` |
+| AllergenChip | `role="checkbox" aria-checked={selected}` |
+| Nav tabs | `role="tab" aria-selected={active}` |
+| Images/emoji | Decorative emoji: `aria-hidden="true"` |
+| Form fields | All inputs labeled (future auth phase) |
