@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Recipes: public read, no write from clients
+    match /recipes/{recipeId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // User settings: keyed by sessionId (localStorage UUID)
+    match /userSettings/{sessionId} {
+      allow read, write: if true;
+    }
+  }
+}
